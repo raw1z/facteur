@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "facteur"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "Messages managment system for Rails 3"
+    gem.description = "Facteur allows you add a messages management system in your Rails 3. You can create many mailboxes for your users. They will be able to send and receive messages."
     gem.email = "dev@raw1z.fr"
     gem.homepage = "http://github.com/raw1z/facteur"
     gem.authors = ["Rawane ZOSSOU"]
