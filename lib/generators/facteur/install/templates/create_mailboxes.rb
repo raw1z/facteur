@@ -5,7 +5,7 @@ class CreateMailboxes < ActiveRecord::Migration
       t.text :contents
       t.integer :addressee_id
       t.string :addressee_type
-      t.boolean :default
+      t.boolean :default, :default => false
     end
   end
 
