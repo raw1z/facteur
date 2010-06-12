@@ -18,7 +18,7 @@ First install the messaging system in your application :
 
     rails generate facteur:install  
     
-This commands create two new models called __mailbox__  and __message__ in *'app/models'* (in the future the names will be changeable):
+This commands creates two new models called __mailbox__  and __message__ in *'app/models'* (in the future the names will be changeable):
 
     class Mailbox < ActiveRecord::Base
       include Facteur::MailboxModel
