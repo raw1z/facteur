@@ -92,6 +92,29 @@ To list the messages sent by a user :
 
     @john.messages_sent
     
+### More methods ###
+
+This section list the other methods available for each elements of the messaging system :
+
+#### User ####
+
+    mailboxes      : mailboxes assigned to this user
+    messages_sent  : messages sent by the user
+
+#### Mailbox ####
+
+    addressee : who the mailbox is assigned to
+    messages  : messages who are stored in the mailbox
+    name      : the name of the mailbox
+
+#### Message ####
+
+    mailbox     : mailbox where the message is stored
+    author      : user who send the message
+    addressee   : who the message was sent to
+    body        : body of the message
+    created_at  : date of creation
+    
 ## Testing the gem ##
 
 It is possible to test facteur by running the following command from the gem directory:
