@@ -10,6 +10,7 @@ class CreateMessages < ActiveRecord::Migration
       t.boolean   :deleted_by_addressee, :default => false
       t.datetime  :deleted_by_addressee_at
       t.boolean   :read, :default => false
+      t.timestamps
     end
   end
 
