@@ -1,6 +1,5 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'parchemin'
 require 'rspec/core'
 require 'rspec/autorun'
 require 'active_record'
@@ -11,7 +10,7 @@ SPEC_ROOT = File.dirname(__FILE__)
 
 ActiveRecord::Base.establish_connection(
   :adapter => "sqlite3",
-  :database => "#{SPEC_ROOT}/db/facteur.sqlite3.db"
+  :database => ":memory:"
 )
 
 ActiveRecord::Migration.verbose = false
@@ -42,7 +41,7 @@ ActiveRecord::Schema.define do
   end
 end
 
-ActiveRecord::Base.logger = Logger.new(File.open("#{SPEC_ROOT}/db/database.log", 'a'))
+#ActiveRecord::Base.logger = Logger.new(File.open("#{SPEC_ROOT}/db/database.log", 'a'))
 
 class User < ActiveRecord::Base
   include Facteur::AddresseeModel

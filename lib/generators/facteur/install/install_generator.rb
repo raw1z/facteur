@@ -6,8 +6,6 @@ module Facteur
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
 
-      desc "Generate the facteur's message and mailbox models"
-
       def self.source_root
         @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
       end
@@ -16,6 +14,7 @@ module Facteur
         Time.now.utc.strftime("%Y%m%d%H%M%S")
       end
 
+      desc "Generate the facteur's message and mailbox models"
       def create_facteur_files
         template 'message.rb', 'app/models/message.rb'
         template 'create_messages.rb', "db/migrate/#{self.class.next_migration_number}_create_messages.rb"
