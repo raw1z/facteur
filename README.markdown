@@ -69,6 +69,7 @@ It is also possible to create a mailbox dynamically. This mailbox will not be av
 
     @john.create_mailbox(:new_mailbox) #=> true
     User.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}]
+    @john.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}, {:name=>:new_mailbox}]
     
 After the previous example, the "news\_mailbox" is only avalaible to John. The names of the mailboxes must be unique. if you try to create a mailbox which already exists, the create_mailbox() method will return false.
 
