@@ -60,6 +60,7 @@ end
 
 def create_users
   User.delete_all
+  Mailbox.delete_all
   %w(John Peter James Mary Jane Victoria).each do |name|
     eval "@#{name.downcase} = User.create(:name => '#{name}')"
   end

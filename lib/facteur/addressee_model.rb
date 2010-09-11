@@ -22,14 +22,21 @@ module Facteur
         mailbox = {:name => name}
         mailbox.merge! options
         mailboxes << mailbox
-        all.each do |addressee|
-          addressee.create_mailbox(name, options)
-        end
       end
       
       # Returns the mailboxes defined for the class
       def mailboxes
         @mailboxes ||= []
+      end
+      
+      def update_addressees_mailboxes
+        all.each do |addressee|
+          @mailboxes.each do |mailbox|
+            options = {}.merge(mailbox)
+            name = options.delete(:name)
+            addressee.create_mailbox(name, options)
+          end
+        end
       end
     end
     
