@@ -86,4 +86,43 @@ describe Facteur::AddresseeModel do
     end
   end
   
+  context "When adding a new mailbox" do
+    before(:all) do
+      create_users
+      class User < ActiveRecord::Base
+        mailbox :added_mailbox
+      end
+    end
+    
+    it "should add the new mailbox to the class mailboxes" do
+      User.mailboxes.should include({:name=>:added_mailbox})
+    end
+    
+    it "should add the new mailbox to all the existing users" do
+      @john.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @john.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @john.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      
+      @peter.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @peter.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @peter.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      
+      @james.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @james.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @james.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      
+      @mary.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @mary.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @mary.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      
+      @jane.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @jane.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @jane.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      
+      @victoria.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+      @victoria.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      @victoria.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+    end
+  end
+  
 end

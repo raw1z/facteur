@@ -59,6 +59,7 @@ class Message < ActiveRecord::Base
 end
 
 def create_users
+  User.delete_all
   %w(John Peter James Mary Jane Victoria).each do |name|
     eval "@#{name.downcase} = User.create(:name => '#{name}')"
   end
