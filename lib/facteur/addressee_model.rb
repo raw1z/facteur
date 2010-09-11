@@ -23,7 +23,7 @@ module Facteur
         mailbox.merge! options
         mailboxes << mailbox
         all.each do |addressee|
-          addressee.create_mailbox!(name, options)
+          addressee.create_mailbox(name, options)
         end
       end
       
