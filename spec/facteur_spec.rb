@@ -29,55 +29,17 @@ describe Facteur::AddresseeModel do
     end
     
     it "creates the addressee's mailboxes" do
-      @john.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @john.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      
-      @peter.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @peter.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      
-      @james.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @james.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      
-      @mary.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @mary.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      
-      @jane.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @jane.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      
-      @victoria.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @victoria.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      User.all.each do |user|
+        user.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+        user.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+      end
     end
     
     it "defines the mailboxes accessors" do
-      @john.should respond_to :private_mailbox
-      @john.should respond_to :public_mailbox
-      @john.private_mailbox.should_not be_nil
-      @john.public_mailbox.should_not be_nil
-      
-      @peter.should respond_to :private_mailbox
-      @peter.should respond_to :public_mailbox
-      @peter.private_mailbox.should_not be_nil
-      @peter.public_mailbox.should_not be_nil
-      
-      @james.should respond_to :private_mailbox
-      @james.should respond_to :public_mailbox
-      @james.private_mailbox.should_not be_nil
-      @james.public_mailbox.should_not be_nil
-      
-      @mary.should respond_to :private_mailbox
-      @mary.should respond_to :public_mailbox
-      @mary.private_mailbox.should_not be_nil
-      @mary.public_mailbox.should_not be_nil
-      
-      @jane.should respond_to :private_mailbox
-      @jane.should respond_to :public_mailbox
-      @jane.private_mailbox.should_not be_nil
-      @jane.public_mailbox.should_not be_nil
-      
-      @victoria.should respond_to :private_mailbox
-      @victoria.should respond_to :public_mailbox
-      @victoria.private_mailbox.should_not be_nil
-      @victoria.public_mailbox.should_not be_nil
+      User.all.each do |user|
+        user.private_mailbox.should_not be_nil
+        user.public_mailbox.should_not be_nil
+      end
     end
   end
   
@@ -95,29 +57,11 @@ describe Facteur::AddresseeModel do
     end
     
     it "should add the new mailbox to all the existing users" do
-      @john.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @john.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @john.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
-      
-      @peter.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @peter.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @peter.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
-      
-      @james.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @james.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @james.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
-      
-      @mary.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @mary.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @mary.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
-      
-      @jane.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @jane.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @jane.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
-      
-      @victoria.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
-      @victoria.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
-      @victoria.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      User.all.each do |user|
+        user.mailboxes.where(:name => 'private_mailbox').first.should_not be_nil
+        user.mailboxes.where(:name => 'public_mailbox').first.should_not be_nil
+        user.mailboxes.where(:name => 'added_mailbox').first.should_not be_nil
+      end
     end
   end
   
@@ -132,6 +76,12 @@ describe Facteur::AddresseeModel do
       message = @peter.private_mailbox.messages.last
       message.author.should == @john
       message.body.should == 'message contents'
+      
+      @john.send_message('message contents', :to => @peter, :in => :private_mailbox, :subject => 'test').should == true
+      message = @peter.private_mailbox.messages.last
+      message.author.should == @john
+      message.body.should == 'message contents'
+      message.subject.should == 'test'
     end
     
     it "sends the messages in the default mailbox" do

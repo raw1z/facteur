@@ -59,10 +59,10 @@ module Facteur
         options[:body] = message
         if options[:to].is_a? Array
           options[:to].each do |addressee|
-            send_message_to(addressee, options[:in], options[:body])
+            send_message_to(addressee, options[:in], options[:body], options[:subject])
           end
         else
-          send_message_to(options[:to], options[:in], options[:body])
+          send_message_to(options[:to], options[:in], options[:body], options[:subject])
         end
       end
       
@@ -84,14 +84,10 @@ module Facteur
       def create_mailbox(name, options={})
         mailbox = Mailbox.new(:name => name.to_s)
         mailbox.addressee = self
+        mailbox.default = options[:default]
         return false if mailbox.save == false
         
         @default_mailbox = name if options[:default]
-        self.class.class_eval do
-          define_method(name) do
-            self.mailboxes.where(:name => name.to_s).first
-          end
-        end
         true
       end
       
@@ -101,6 +97,12 @@ module Facteur
           raise "Mailboxes names must be unique. Can't create '#{name}'"
         end
         self.send "#{name}"
+      end
+      
+      def method_missing(method, *args, &block)
+        mailbox = Mailbox.find(:first, :conditions => {:name => method.to_s, :addressee_id => self.attributes["id"], :addressee_type => self.class.to_s})
+        return mailbox if not mailbox.nil?
+        super
       end
       
       private
@@ -115,7 +117,7 @@ module Facteur
       end
       
       # send a message to an addressee
-      def send_message_to(addressee, mailbox_name, contents)
+      def send_message_to(addressee, mailbox_name, contents, subject=nil)
         return false if addressee.nil? or contents.nil?
         
         mailbox_name = @default_mailbox if mailbox_name.nil?
@@ -125,6 +127,7 @@ module Facteur
         message.author = self
         message.mailbox = addressee.send(mailbox_name)
         message.body = contents
+        message.subject = subject
         message.save
       end
     end
