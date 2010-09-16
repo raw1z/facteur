@@ -72,21 +72,18 @@ describe Facteur::AddresseeModel do
     end
     
     it "sends a message to another addressee" do
-      @john.send_message('message contents', :to => @peter, :in => :private_mailbox).should == true
-      message = @peter.private_mailbox.messages.last
+      message = @john.send_message('message contents', :to => @peter, :in => :private_mailbox)
       message.author.should == @john
       message.body.should == 'message contents'
       
-      @john.send_message('message contents', :to => @peter, :in => :private_mailbox, :subject => 'test').should == true
-      message = @peter.private_mailbox.messages.last
+      message = @john.send_message('message contents', :to => @peter, :in => :private_mailbox, :subject => 'test')
       message.author.should == @john
       message.body.should == 'message contents'
       message.subject.should == 'test'
     end
     
     it "sends the messages in the default mailbox" do
-      @john.send_message('message contents', :to => @peter).should == true
-      message = @peter.private_mailbox.messages.last
+      message = @john.send_message('message contents', :to => @peter)
       message.author.should == @john
       message.body.should == 'message contents'
     end
@@ -100,7 +97,9 @@ describe Facteur::AddresseeModel do
     end
     
     it "sends a message to many addressees" do
-      @john.send_message('message contents', :to => [@peter, @james, @jane], :in => :private_mailbox)
+      message = @john.send_message('message contents', :to => [@peter, @james, @jane], :in => :private_mailbox)
+      message.author.should == @john
+      message.body.should == 'message contents'
       
       message = @peter.private_mailbox.messages.last
       message.author.should == @john

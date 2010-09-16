@@ -56,14 +56,16 @@ module Facteur
       #     # send a message to many addressees
       #     @john.send_message('message contents', :to => [@peter, @james], :in => :private_mailbox)
       def send_message(message, options)
+        msg = nil
         options[:body] = message
         if options[:to].is_a? Array
           options[:to].each do |addressee|
-            send_message_to(addressee, options[:in], options[:body], options[:subject])
+            msg = send_message_to(addressee, options[:in], options[:body], options[:subject])
           end
         else
-          send_message_to(options[:to], options[:in], options[:body], options[:subject])
+          msg = send_message_to(options[:to], options[:in], options[:body], options[:subject])
         end
+        msg
       end
       
       # Creates a new mailbox. if a mailbox with the same name already exists, it fails and returns false. If succeeded, it creates an accessor for the new mail box and returns true.
@@ -129,6 +131,7 @@ module Facteur
         message.body = contents
         message.subject = subject
         message.save
+        message
       end
     end
   end
