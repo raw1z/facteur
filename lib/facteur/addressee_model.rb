@@ -102,8 +102,13 @@ module Facteur
       end
       
       def method_missing(method, *args, &block)
-        mailbox = Mailbox.find(:first, :conditions => {:name => method.to_s, :addressee_id => self.attributes["id"], :addressee_type => self.class.to_s})
-        return mailbox if not mailbox.nil?
+        mailboxes = self.class.mailboxes.map{ |mailbox| mailbox[:name] }
+        
+        if mailboxes.include?(method)
+          mailbox = Mailbox.find(:first, :conditions => {:name => method.to_s, :addressee_id => self.attributes["id"], :addressee_type => self.class.to_s})
+          return mailbox if not mailbox.nil?
+        end
+        
         super
       end
       
