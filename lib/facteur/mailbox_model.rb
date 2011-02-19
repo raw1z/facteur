@@ -1,11 +1,14 @@
 module Facteur
   module MailboxModel
-    def self.included(receiver)
-      receiver.class_exec do
-        belongs_to :addressee, :polymorphic => true
-        has_many :messages
-        validates_presence_of :name
-        validates_uniqueness_of :name, :scope => [:addressee_id, :addressee_type]
+    extend ActiveSupport::Concern
+
+    included do
+      if self.ancestors.map(&:to_s).include?("ActiveRecord::Base")
+        self.class_exec { include Facteur::ActiveRecordMailboxModel }
+      elsif self.ancestors.map(&:to_s).include?("Mongoid::Document")
+        self.class_exec { include Facteur::MongoidMailboxModel }
+      else
+        raise "Facteur only supports ActiveRecord and Mongoid"
       end
     end
   end

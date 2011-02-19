@@ -1,0 +1,3 @@
+Version 0.7.2 (16.02.2011)
+--------------------------
+- Added total_friends() and total_blocked() which count friendships and blocks without loading associations (by David Czarnecki)
