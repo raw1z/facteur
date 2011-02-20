@@ -16,11 +16,8 @@ module Facteur
 
       desc "Generate the facteur's message and mailbox models"
       def create_facteur_files
-        template 'message.rb', 'app/models/message.rb'
         template 'create_messages.rb', "db/migrate/#{self.class.next_migration_number}_create_messages.rb"
-        
         sleep(1)
-        template 'mailbox.rb', 'app/models/mailbox.rb'
         template 'create_mailboxes.rb', "db/migrate/#{self.class.next_migration_number}_create_mailboxes.rb"
       end
     end
