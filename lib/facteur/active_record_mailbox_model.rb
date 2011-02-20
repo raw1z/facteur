@@ -1,3 +1,5 @@
+require 'active_record'
+
 module Facteur
   module ActiveRecordMailboxModel
     extend ActiveSupport::Concern

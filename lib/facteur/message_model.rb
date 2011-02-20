@@ -4,9 +4,9 @@ module Facteur
 
     included do
       if self.ancestors.map(&:to_s).include?("ActiveRecord::Base")
-        self.class_exec { include Facteur::ActiveRecordMessageModel }
+        include Facteur::ActiveRecordMessageModel
       elsif self.ancestors.map(&:to_s).include?("Mongoid::Document")
-        self.class_exec { include Facteur::MongoidMessageModel }
+        include Facteur::MongoidMessageModel
       else
         raise "Facteur only supports ActiveRecord and Mongoid"
       end

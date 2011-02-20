@@ -1,17 +1,17 @@
 require 'active_support/concern'
 require 'active_support/dependencies/autoload'
-require 'active_record'
 
 module Facteur
   extend ActiveSupport::Autoload
   
   autoload :ActiveRecordMessageModel
+  autoload :MongoidMessageModel
+  autoload :MessageModel
   autoload :ActiveRecordMailboxModel
+  autoload :MongoidMailboxModel
+  autoload :MailboxModel
   autoload :BaseAddresseeModel
   autoload :ActiveRecordAddresseeModel
-  autoload :MessageModel
-  autoload :MailboxModel
+  autoload :MongoidAddresseeModel
   autoload :AddresseeModel
-  autoload :Message
-  autoload :Mailbox
 end

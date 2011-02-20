@@ -1,7 +1,7 @@
 module Facteur
   module BaseAddresseeModel
     extend ActiveSupport::Concern
-
+    
     module ClassMethods
       # Define a mailbox. The following options are available:
       # <tt>:default</tt>:: defines the default mailbox. You must choose one default mailbox
@@ -10,23 +10,26 @@ module Facteur
         mailbox.merge! options
         mailboxes << mailbox
       end
-
+      
       # Returns the mailboxes defined for the class
       def mailboxes
         @mailboxes ||= []
       end
-
-      def update_addressees_mailboxes
-        all.each do |addressee|
-          @mailboxes.each do |mailbox|
-            options = {}.merge(mailbox)
-            name = options.delete(:name)
-            addressee.create_mailbox(name, options)
-          end
+      
+      # check if a mailbox is defined
+      def has_mailbox?(name)
+        @mailboxes.each do |mailbox|
+          return true if mailbox[:name] == name
         end
+        false
+      end
+      
+      # return the default mailbox name if set, else return nil
+      def default_mailbox
+        @mailboxes.select{ |mailbox| mailbox[:default] == true }.first[:name]
       end
     end
-
+    
     module InstanceMethods
       # Sends a message to one or many addressees. The following options are available:
       #
@@ -53,7 +56,7 @@ module Facteur
         end
         msg
       end
-
+      
       # Creates a new mailbox. if a mailbox with the same name already exists, it fails and returns false. If succeeded, it creates an accessor for the new mail box and returns true.
       # Example :
       #
@@ -70,15 +73,11 @@ module Facteur
       #     user.create_mailbox :public_mailbox #=> return true
       #     user.create_mailbox :private_mailbox #=> return false
       def create_mailbox(name, options={})
-        mailbox = Mailbox.new(:name => name.to_s)
-        mailbox.addressee = self
-        mailbox.default = options[:default]
+        mailbox = mailboxes.build(:name => name.to_s, :default => options[:default])
         return false if mailbox.save == false
-
-        @default_mailbox = name if options[:default]                
-        true
+        mailbox
       end
-
+      
       # Creates a new mailbox. if a mailbox with the same name already exists, it raises an exception. If succeeded, it creates an accessor for the new mail box and returns the created mailbox.
       def create_mailbox!(name, options={})
         if create_mailbox(name, options) == false
@@ -86,25 +85,33 @@ module Facteur
         end
         self.send "#{name}"
       end
-
+      
       # generates the mailboxes accessors
-      def method_missing(method, *args, &block)
-        super if method.to_s == "to_ary"
-
+      def method_missing(method, *args, &block)      
         begin
           super
         rescue NoMethodError, NameError
-          mailbox = mailboxes.where(:name => method.to_s).first
+          mailbox = self.mailboxes.where(:name => method.to_s).first
           if mailbox.nil?
-            raise NoMethodError
+            raise NoMethodError unless self.class.has_mailbox?(method)
+            
+            # if the unknown method matches one of the Model mailboxes, then the mailbox is created
+            create_mailbox(method, self.class.mailboxes.select{ |m| m[:name] == method }.first)
           else
             return mailbox
           end
         end
       end
-
+      
+      # redefine the comparison method because for some weirds reasons, the original fails
+      def ==(comparison_object)
+        comparison_object.equal?(self) ||
+          (self.class.to_s == comparison_object.class.to_s &&
+            comparison_object.id == id && !comparison_object.new_record?)
+      end
+      
       private
-
+      
       # creates the mailboxes defined in the configuration
       def create_mailboxes
         self.class.mailboxes.each do |mailbox|
@@ -113,19 +120,20 @@ module Facteur
           create_mailbox!(name, options)
         end
       end
-
+      
       # send a message to an addressee
       def send_message_to(addressee, mailbox_name, contents, subject=nil)
         return false if addressee.nil? or contents.nil?
-
-        mailbox_name = @default_mailbox if mailbox_name.nil?
+      
+        mailbox_name = self.class.default_mailbox if mailbox_name.nil?
         return false if mailbox_name.nil?
-
-        message = Message.new
-        message.author = self
-        message.mailbox = addressee.send(mailbox_name)
-        message.body = contents
-        message.subject = subject
+      
+        message = addressee.send(mailbox_name).messages.new(
+          :subject => subject,
+          :body => contents,
+          :author_id => self.id
+        )
+      
         message.save
         message
       end
