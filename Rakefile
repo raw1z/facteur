@@ -20,10 +20,10 @@ end
 
 require 'rspec/core'
 require 'rspec/core/rake_task'
-Rspec::Core::RakeTask.new(:spec) do |spec|
+RSpec::Core::RakeTask.new(:spec) do |spec|
 end
 
-Rspec::Core::RakeTask.new(:rcov) do |spec|
+RSpec::Core::RakeTask.new(:rcov) do |spec|
 end
 
 task :spec => :check_dependencies
