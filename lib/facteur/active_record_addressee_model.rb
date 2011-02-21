@@ -7,7 +7,6 @@ module Facteur
 
     included do
       has_many :mailboxes, :as => :addressee, :class_name => "Facteur::Mailbox"
-      has_many :messages_sent, :class_name => "Facteur::Message", :foreign_key => "author_id"
     end
   end
 end

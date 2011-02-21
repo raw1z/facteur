@@ -7,13 +7,11 @@ module Facteur
     included do
       field :body
       field :subject
-      field :author_id
       
       embedded_in :mailbox, :class_name => "Facteur::Mailbox"
-      referenced_in :author, :class_name => "User", :foreign_key => "author_id"
+      referenced_in :author, :class_name => "User"
+      references_and_referenced_in_many :addressees, :class_name => "User"
       
-      #delegate :addressee, :to => :mailbox
-      #delegate :addressee_type, :to => :mailbox
       validates_presence_of :body, :author_id
     end
   end

@@ -82,5 +82,26 @@ shared_examples_for "an addressee model" do
       message.author.should == @john
       message.body.should == 'message contents'
     end
+    
+    it "saves the messages sent" do
+      @victoria.sent_messages.delete_all
+      @victoria.send_message('message contents', :to => @john)
+      @victoria.sent_messages.count.should == 1
+      @victoria.sent_messages.first.body.should == 'message contents'
+      @victoria.sent_messages.first.author.should == @victoria
+      @victoria.sent_messages.first.addressees.should == [@john]
+      @victoria.send_message('message contents', :to => @peter)
+      @victoria.sent_messages.count.should == 2
+      @victoria.sent_messages.last.body.should == 'message contents'
+      @victoria.sent_messages.last.author.should == @victoria
+      @victoria.sent_messages.last.addressees.should == [@peter]
+      
+      @victoria.sent_messages.delete_all
+      @victoria.send_message('message contents', :to => [@peter, @james, @jane])
+      @victoria.sent_messages.count.should == 1
+      @victoria.sent_messages.first.body.should == 'message contents'
+      @victoria.sent_messages.first.author.should == @victoria
+      @victoria.sent_messages.first.addressees.should == [@peter, @james, @jane]
+    end
   end
 end

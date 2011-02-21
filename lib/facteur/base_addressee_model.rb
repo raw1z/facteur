@@ -1,7 +1,7 @@
 module Facteur
   module BaseAddresseeModel
     extend ActiveSupport::Concern
-    
+        
     module ClassMethods
       # Define a mailbox. The following options are available:
       # <tt>:default</tt>:: defines the default mailbox. You must choose one default mailbox
@@ -31,6 +31,11 @@ module Facteur
     end
     
     module InstanceMethods
+      #  returns the messages sent by this addressee
+      def sent_messages
+        sent_messages_mailbox.messages
+      end
+      
       # Sends a message to one or many addressees. The following options are available:
       #
       # <tt>:to</tt>:: the addressee or the list of addressees (mandatory)
@@ -45,16 +50,14 @@ module Facteur
       #     # send a message to many addressees
       #     @john.send_message('message contents', :to => [@peter, @james], :in => :private_mailbox)
       def send_message(message, options)
-        msg = nil
         options[:body] = message
-        if options[:to].is_a? Array
-          options[:to].each do |addressee|
-            msg = send_message_to(addressee, options[:in], options[:body], options[:subject])
-          end
+        if options[:to].respond_to?(:each)
+          options[:to].each { |addressee| send_message_to(addressee, options[:in], options[:body], options[:subject]) }
         else
-          msg = send_message_to(options[:to], options[:in], options[:body], options[:subject])
+          send_message_to(options[:to], options[:in], options[:body], options[:subject])
         end
-        msg
+        
+        store_in_sent_messages(message, options)
       end
       
       # Creates a new mailbox. if a mailbox with the same name already exists, it fails and returns false. If succeeded, it creates an accessor for the new mail box and returns true.
@@ -112,6 +115,12 @@ module Facteur
       
       private
       
+      # return the sent messages mailbox
+      def sent_messages_mailbox
+        mailbox = self.mailboxes.where(:name => "sent_messages_mailbox").first
+        mailbox || create_mailbox("sent_messages_mailbox")
+      end
+      
       # creates the mailboxes defined in the configuration
       def create_mailboxes
         self.class.mailboxes.each do |mailbox|
@@ -128,14 +137,26 @@ module Facteur
         mailbox_name = self.class.default_mailbox if mailbox_name.nil?
         return false if mailbox_name.nil?
       
-        message = addressee.send(mailbox_name).messages.new(
-          :subject => subject,
-          :body => contents,
-          :author_id => self.id
-        )
+        message = addressee.send(mailbox_name).messages.build(:subject => subject, :body => contents)
+        message.author = self
+        message.save ? message : false
+      end
       
-        message.save
-        message
+      # saves a message in the sent messages mailbox
+      def store_in_sent_messages(message, options)
+        # the addressees must be given
+        return false if options[:to].blank?
+        
+        sent_message = sent_messages_mailbox.messages.build(:subject => options[:subject], :body => options[:body])
+        sent_message.author = self
+        
+        if options[:to].respond_to?(:each)
+          options[:to].each { |addressee| sent_message.addressees << addressee }
+        else
+          sent_message.addressees << options[:to]
+        end
+        
+        sent_message.save ? sent_message : false
       end
     end
   end

@@ -11,7 +11,6 @@ class CreateSchema < ActiveRecord::Migration
 
     create_table :mailboxes, :force => true do |t|
       t.string     :name
-      t.text       :contents
       t.belongs_to :addressee, :polymorphic => true
       t.boolean    :default, :default => :false
     end
@@ -21,12 +20,13 @@ class CreateSchema < ActiveRecord::Migration
       t.text       :body
       t.belongs_to :mailbox
       t.belongs_to :author
-      t.boolean    :deleted_by_author, :default => false
-      t.datetime   :deleted_by_author_at
-      t.boolean    :deleted_by_addressee, :default => false
-      t.datetime   :deleted_by_addressee_at
       t.boolean    :read, :default => false
-    end 
+    end
+    
+    create_table :messages_addressees, :id => false, :force => true do |t|
+      t.references :addressee
+      t.references :message
+    end
   end
 end
 
