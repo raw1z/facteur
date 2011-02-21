@@ -103,12 +103,7 @@ module Facteur
       
       # generates the mailboxes accessors
       def method_missing(method, *args, &block)
-        # mailboxes = self.class.mailboxes.map{ |mailbox| mailbox[:name] }
-        # 
-        # if mailboxes.include?(method)
-        #   mailbox = Mailbox.find(:first, :conditions => {:name => method.to_s, :addressee_id => self.attributes["id"], :addressee_type => self.class.to_s})
-        #   return mailbox unless mailbox.nil?
-        # end
+        super if method == :to_ary
         
         begin
           super
