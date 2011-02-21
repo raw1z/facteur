@@ -9,8 +9,8 @@ module Facteur
       field :subject
       
       embedded_in :mailbox, :class_name => "Facteur::Mailbox"
-      referenced_in :author, :class_name => "User"
-      references_and_referenced_in_many :addressees, :class_name => "User"
+      referenced_in :author, :class_name => Facteur.addressee_model
+      references_and_referenced_in_many :addressees, :class_name => Facteur.addressee_model
       
       validates_presence_of :body, :author_id
     end

@@ -3,6 +3,7 @@ module Facteur
     extend ActiveSupport::Concern
 
     included do
+      Facteur.addressee_model = self.to_s
       Facteur.send(:remove_const, :Mailbox) if Facteur.const_defined?(:Mailbox)
       Facteur.send(:remove_const, :Message) if Facteur.const_defined?(:Message)
       

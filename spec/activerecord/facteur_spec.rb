@@ -4,9 +4,9 @@ describe Facteur::AddresseeModel do
   context "When users are created after activating facteur" do
     before(:all) do
       # create a user model with facteur activated
-      Object.send(:remove_const, :User) if Object.const_defined?(:User)
-      User = Class.new(ActiveRecord::Base)
-      User.class_exec do
+      Object.send(:remove_const, :Member) if Object.const_defined?(:Member)
+      Member = Class.new(ActiveRecord::Base)
+      Member.class_exec do
         validates_uniqueness_of :name
         include Facteur::AddresseeModel
         mailbox :private_mailbox, :default => true
@@ -14,7 +14,7 @@ describe Facteur::AddresseeModel do
       end
       
       # create the users
-      User.delete_all
+      Member.delete_all
       create_users
     end
   
@@ -24,18 +24,18 @@ describe Facteur::AddresseeModel do
   context "When users are created before activating facteur" do
     before(:all) do
       # create a user model without amistad activated
-      Object.send(:remove_const, :User) if Object.const_defined?(:User)
-      User = Class.new(ActiveRecord::Base)
-      User.class_exec do
+      Object.send(:remove_const, :Member) if Object.const_defined?(:Member)
+      Member = Class.new(ActiveRecord::Base)
+      Member.class_exec do
         validates_uniqueness_of :name
       end
       
       # create the users
-      User.delete_all
+      Member.delete_all
       create_users
       
       # activate facteur
-      User.class_exec do
+      Member.class_exec do
         include Facteur::AddresseeModel
         mailbox :private_mailbox, :default => true
         mailbox :public_mailbox

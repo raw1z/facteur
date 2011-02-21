@@ -5,7 +5,7 @@ ActiveRecord::Base.establish_connection(
 
 class CreateSchema < ActiveRecord::Migration
   def self.up
-    create_table :users, :force => true do |t|
+    create_table :members, :force => true do |t|
       t.string :name, :null => false
     end
 

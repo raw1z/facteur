@@ -11,11 +11,11 @@ module Facteur
                  :class_name => "Facteur::Mailbox"
       
       belongs_to :author,
-                 :class_name => "User",
+                 :class_name => Facteur.addressee_model,
                  :foreign_key => "author_id"
                  
       has_and_belongs_to_many :addressees, 
-                              :class_name => "User",
+                              :class_name => Facteur.addressee_model,
                               :join_table => "messages_addressees",
                               :association_foreign_key => "addressee_id"
     end

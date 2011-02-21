@@ -8,7 +8,7 @@ module Facteur
       field :name
       field :default, :default => false
       
-      embedded_in :addressee, :class_name => "User", :inverse_of => :mailboxes
+      embedded_in :addressee, :class_name => Facteur.addressee_model, :inverse_of => :mailboxes
       embeds_many :messages, :class_name => "Facteur::Message"
       
       validates_uniqueness_of :name

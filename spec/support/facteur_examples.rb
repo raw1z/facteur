@@ -21,17 +21,17 @@ shared_examples_for "an addressee model" do
   
   context "When adding a new mailbox" do
     before(:all) do
-      User.class_exec do
+      Member.class_exec do
         mailbox :added_mailbox
       end
     end
     
     it "should add the new mailbox to the class mailboxes" do
-      User.mailboxes.should include({:name=>:added_mailbox})
+      Member.mailboxes.should include({:name=>:added_mailbox})
     end
     
     it "should add the new mailbox to all the existing users" do
-      User.all.each do |user|
+      Member.all.each do |user|
         user.private_mailbox.should_not be_nil
         user.public_mailbox.should_not be_nil
         user.added_mailbox.should_not be_nil

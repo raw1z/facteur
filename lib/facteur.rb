@@ -14,4 +14,12 @@ module Facteur
   autoload :ActiveRecordAddresseeModel
   autoload :MongoidAddresseeModel
   autoload :AddresseeModel
+  
+  def self.addressee_model
+    @addressee_model || "User"
+  end
+  
+  def self.addressee_model=(model)
+    @addressee_model = model
+  end
 end
