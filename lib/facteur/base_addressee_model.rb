@@ -96,7 +96,7 @@ module Facteur
         rescue NoMethodError, NameError
           mailbox = self.mailboxes.where(:name => method.to_s).first
           if mailbox.nil?
-            raise NoMethodError unless self.class.has_mailbox?(method)
+            super unless self.class.has_mailbox?(method)
             
             # if the unknown method matches one of the Model mailboxes, then the mailbox is created
             create_mailbox(method, self.class.mailboxes.select{ |m| m[:name] == method }.first)
