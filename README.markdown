@@ -35,47 +35,47 @@ or
       include Facteur::AddresseeModel
     end
     
-You model must be named 'User'. This will be changed in the future.
+Starting from version 1.3, the name of the addressee model is no more restricted to 'User'. You can add a mailbox to any model.
 
 ## Messaging system ##
 
 ### Creating mailboxes ###
 
-In the facteur's system, each user must have a mailbox where he can receive messages. The mailboxes can be declared statically and/or dynamically. Let's start first by the static way :
+Each addressee must have a mailbox where he can receive messages. The mailboxes can be declared statically and/or dynamically. Let's start first by the static way :
 
-    class User < ActiveRecord::Base  
+    class Member < ActiveRecord::Base  
       include Facteur::AddresseeModel
       
       mailbox :private_mailbox, :default => true
       mailbox :public_mailbox
     end
 
-The previous example declare two mailboxes that will be created for each user. The mailboxes are created when they are first accessed. Facteur generates for you two methods to access your mailboxes :
+The previous example declare two mailboxes that will be created for each member. The mailboxes are created when they are first accessed. Facteur generates for you two methods to access your mailboxes :
 
-    # assuming that 'login' and 'password' are fields defined for the User model
-    @john = User.create(:login => 'john', :password => 'pass')
+    # assuming that 'login' and 'password' are fields defined for the Member model
+    @john = Member.create(:login => 'john', :password => 'pass')
     
     # Now, the mailboxes exist and they can be accessed
     @john.private_mailbox #=> generates and returns the private mailbox
     @john.public_mailbox #=> generates and returns the public mailbox
     
     # To check the mailboxes which where defined
-    User.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}]
+    Member.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}]
     
-It is also possible to create a mailbox dynamically. This mailbox will not be available for all the users but only for the user who created it :
+It is also possible to create a mailbox dynamically. This mailbox will not be available for all the members but only for the one who created it :
 
     @john.create_mailbox(:new_mailbox) #=> true
-    User.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}]
+    Member.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}]
     @john.mailboxes #=> [{:name=>:private_mailbox, :default=>true}, {:name=>:public_mailbox}, {:name=>:new_mailbox}]
     
-After the previous example, the "news\_mailbox" is only avalaible to John. The names of the mailboxes must be unique. if you try to create a mailbox which already exists, the create_mailbox() method will return false.
+After the previous example, the "news\_mailbox" is only avalaible to John. The names of the mailboxes must be unique. if you try to create a mailbox which already exists, the create_mailbox() method will fail and return false.
 
 ### Sending messages ###
 
-It is possible to send a message to one or many user :
+It is possible to send a message to one or many addressee :
 
-    @peter = User.create(:login => 'peter', :password => 'pass')
-    @mary = User.create(:login => 'mary', :password => 'pass')
+    @peter = Member.create(:login => 'peter', :password => 'pass')
+    @mary = Member.create(:login => 'mary', :password => 'pass')
     
     @john.send_message('hello', :to => @peter, :in => :private_mailbox)
     @john.send_message('hello', :to => [@peter, @mary], :in => :public_mailbox)
@@ -118,7 +118,8 @@ This section list the other methods available for each elements of the messaging
 
 It is possible to test facteur by running the following command from the gem directory:
 
-    rake spec
+    rake spec:activerecord # activerecord tests
+    rake spec:mongoid      # mongoid tests
 
 ## Note on Patches/Pull Requests ##
  
