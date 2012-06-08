@@ -2,7 +2,7 @@ module Facteur
   if Object.const_defined? :ActiveRecord
     class Mailbox < ActiveRecord::Base
       include Facteur::MailboxModel
-      attr_accessible :name # stops ActiveRecord mass_assignment issues;
+      attr_accessible :name # stops ActiveRecord mass_assignment issues in rails 3.2+;
                             #it appears this is the only attr that is directly set when a message is sent
     end
     
