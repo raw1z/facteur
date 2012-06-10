@@ -2,6 +2,7 @@ module Facteur
   if Object.const_defined? :ActiveRecord
     class Mailbox < ActiveRecord::Base
       include Facteur::MailboxModel
+  
     end
     
   elsif Object.const_defined? :Mongoid
